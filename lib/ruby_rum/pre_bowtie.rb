@@ -1,7 +1,7 @@
 module RubyRum
 	class PreBowtie
 		# Parameters
-		def initialize(read1 , read2 , genom, bowtiedir,outdir, chunk=1)
+		def initialize(bowtiedir, genom, read1 , read2 ,  outdir, chunk=1)
 			@read1 = read1 #FASTQ
 			@read2 = read2 #FASTQ
 			@genom = genom
@@ -11,13 +11,15 @@ module RubyRum
 			# add path for bowtie exutables
 		end
 
+
 		attr :read1, :read2, :chunk	, :genom, :outdir
 
 		# Example: /ifs/apps/bowtie/bowtie-0.12.7/bowtie -a --best --strata /ifs/apps/RUM/current/indexes/hg19_genome /ifs/hts_up/example_dataset/example_R1_001.fastq,/ifs/hts_up/example_dataset/example_R2_001.fastq -v 3 --suppress 
 		def call_bowtie()
+			
 			# Bowtie exutables in File
 			# Example: /ifs/apps/bowtie/bowtie-0.12.7/bowtie -a --best --strata  --pairtries 1000 --chunkmbs 1024 /ifs/apps/RUM/current/indexes/hg19_genome /ifs/hts_up/example_dataset/example_R1_001.fastq,/ifs/hts_up/example_dataset/example_R2_001.fastq -v 3 --suppress 6,7,8 -p 1 --quiet -S  test2
-			cmd = "#{@bowtiedir} -a --best --strata --pairtries 1000 --chunkmbs 1024 #{@genom} #{@read1},#{@read2} -v 3 --suppress 6,7,8 -p 1 --quiet -S #{@outdir}" 
+			cmd = "#{@bowtiedir} -a --best --strata --pairtries 1000 --chunkmbs 1024 #{@genom} #{@read1},#{@read2} #{@outdir}" 
 			a = Thread.new {z=system(cmd)}
 			b = Thread.new { 
 				while a.alive?
@@ -29,6 +31,7 @@ module RubyRum
 			}
 			a.join
 			b.join
+			File.exist?(outdir)
 		end
 	end
 end
