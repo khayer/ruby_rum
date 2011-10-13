@@ -4,6 +4,7 @@
 require 'ruby_rum/pre_bowtie'
 
 def usage
+	puts ""
 	puts "----------------------- Usage -------------------------"
 	puts "#{$0} bowtie ebwt read1 read2 outfile "
 	puts "-------------------------------------------------------"
@@ -16,6 +17,7 @@ def usage
 	puts "   read : reads in fastq format"
 	puts "outfile : name of the output file"
 	puts "-------------------------------------------------------"
+	puts ""
 end
 
 

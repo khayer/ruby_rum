@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+
+
+require 'ruby_rum/bowtie_parser'
+require 'ruby_rum/bowtie_content'
+
+
+def usage
+	puts ""
+	puts "----------------------- Usage -------------------------"
+	puts "#{$0} file [options] [outfile]"
+	puts "-------------------------------------------------------"
+	puts "Parses a file produced by bowtie (only sam format)"
+	puts "-------------------------------------------------------"
+	puts "Options are: "
+	puts "       b(oth) : (default) returns the all the entries"
+	puts "    u(ninque) : Only returns the unique mapped alignments"
+	puts " n(on-unique) : Only returns the non-unique mapped alignments"
+	puts "-------------------------------------------------------"
+	puts "         file : name of the bowtie file"
+	puts "      outfile : (optional) name of the output file"
+	puts "-------------------------------------------------------"
+	puts ""
+end
+
+
+if ARGV.size==0 || ARGV.size > 3
+	usage 
+	exit 1
+end
+
+
+unless File.exist?(ARGV[0])
+	raise "Can't find file #{ARGV[0]}!"
+end
+
+file = RubyRum::BowtieParser.new(ARGV[0])
+puts file.list_of_lines.length
+puts file.non_unique_mapper_pos.length
+puts file.unique_mapper_pos.length
+puts file.list_of_header.length
+
+case ARGV[1] 
+when "unique", "u"
+	str = file.unique_to_s()
+
+when "non-unique", "n"
+	str = file.non_unique_to_s() 
+
+else
+	str = file.unique_to_s() + "\n @@@@@@@@ \n" + file.non_unique_to_s()
+	
+end
+
+print str
+
+
