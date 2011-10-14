@@ -25,7 +25,7 @@ end
 
 
 if ARGV.size==0 || ARGV.size > 3
-	usage 
+	usage
 	exit 1
 end
 
@@ -35,23 +35,23 @@ unless File.exist?(ARGV[0])
 end
 
 file = RubyRum::BowtieParser.new(ARGV[0])
-puts file.list_of_lines.length
-puts file.non_unique_mapper_pos.length
-puts file.unique_mapper_pos.length
-puts file.list_of_header.length
+#puts file.list_of_lines.length
+#puts file.non_unique_mapper_pos.length
+#puts file.unique_mapper_pos.length
+#puts file.list_of_header.length
 
-case ARGV[1] 
+case ARGV[1]
 when "unique", "u"
 	str = file.unique_to_s()
 
 when "non-unique", "n"
-	str = file.non_unique_to_s() 
+	str = file.non_unique_to_s()
 
 else
 	str = file.unique_to_s() + "\n @@@@@@@@ \n" + file.non_unique_to_s()
-	
+
 end
 
-print str
+puts str
 
 

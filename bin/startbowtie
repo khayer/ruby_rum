@@ -4,35 +4,36 @@
 require 'ruby_rum/pre_bowtie'
 
 def usage
-	puts ""
-	puts "----------------------- Usage -------------------------"
-	puts "#{$0} bowtie ebwt read1 read2 outfile "
-	puts "-------------------------------------------------------"
-	puts "Calls bowtie with the following preset options:"
-	puts "-a --best --strata  --pairtries 1000 --chunkmbs 1024"
-	puts "-v 3 --suppress 6,7,8 -p 1 --quiet -S"
-	puts "-------------------------------------------------------"
-	puts " bowtie : variable in path or the absolut path"
-	puts "   ebwt : bowtie-index"
-	puts "   read : reads in fastq format"
-	puts "outfile : name of the output file"
-	puts "-------------------------------------------------------"
-	puts ""
+    msg =<<EOF
+----------------------- Usage -------------------------
+#{$0} bowtie ebwt read1 read2 outfile
+-------------------------------------------------------
+Calls bowtie with the following preset options:
+-a --best --strata  --pairtries 1000 --chunkmbs 1024"
+-v 3 --suppress 6,7,8 -p 1 --quiet -S"
+-------------------------------------------------------"
+ bowtie : variable in path or the absolut path"
+   ebwt : bowtie-index"
+   read : reads in fastq format"
+outfile : name of the output file"
+-------------------------------------------------------"
+EOF
+
 end
 
 
 
 if ARGV.size!=5
-	usage 
-	exit 1
+    usage
+    exit 1
 end
 
 if File.exist?(ARGV[4])
-	File.delete(ARGV[4])
+    File.delete(ARGV[4])
 end
 
 para = RubyRum::PreBowtie.new(*ARGV)
 t = para.call_bowtie()
 if !t
- 	puts "bowtie did not produce an output file, please check parameters again"
+    puts "bowtie did not produce an output file, please check parameters again"
 end

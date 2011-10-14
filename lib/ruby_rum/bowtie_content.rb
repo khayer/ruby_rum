@@ -1,7 +1,7 @@
 module RubyRum
 	class BowtieContent
 
-		def initialize(line) 
+		def initialize(line)
 			tmp = line.split(" ")
 			@qname = tmp[0]
 			@flag = tmp[1]
@@ -14,14 +14,14 @@ module RubyRum
 			@tlen = tmp[8]
 			@seq = tmp[9]
 			@qual = tmp[10]
-		
+
 		end
 
 		attr_accessor :qname, :flag, :rname, :pos, :mapq, :cigar, :rnext, :pnext, :tlen, :seq, :qual
 
 
 		def to_s
-			"#{@qname}\t#{@flag}\t#{@rname}\t#{@pos}\t#{@mapq}\t#{@cigar}\t#{@rnext}\t#{@pnext}\t#{@tlen}\t#{@seq}\t#{@qual}\n" 
+			"#{@qname}\t#{@flag}\t#{@rname}\t#{@pos}\t#{@mapq}\t#{@cigar}\t#{@rnext}\t#{@pnext}\t#{@tlen}\t#{@seq}\t#{@qual}\n"
 		end
 
 		def inspect()
