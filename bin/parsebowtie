@@ -4,54 +4,70 @@
 require 'ruby_rum/bowtie_parser'
 require 'ruby_rum/bowtie_content'
 
+require 'optparse'
+
+
+
+
 
 def usage
-	puts ""
-	puts "----------------------- Usage -------------------------"
-	puts "#{$0} file [options] [outfile]"
-	puts "-------------------------------------------------------"
-	puts "Parses a file produced by bowtie (only sam format)"
-	puts "-------------------------------------------------------"
-	puts "Options are: "
-	puts "       b(oth) : (default) returns the all the entries"
-	puts "    u(ninque) : Only returns the unique mapped alignments"
-	puts " n(on-unique) : Only returns the non-unique mapped alignments"
-	puts "-------------------------------------------------------"
-	puts "         file : name of the bowtie file"
-	puts "      outfile : (optional) name of the output file"
-	puts "-------------------------------------------------------"
-	puts ""
+	msg =<<EOF
+
+----------------------- Usage -------------------------
+#{$0} file [options] [outfile]
+-------------------------------------------------------
+Parses a file produced by bowtie (only sam format)
+-------------------------------------------------------
+         file : name of the bowtie file
+      outfile : (optional) name of the output file
+-------------------------------------------------------
+
+EOF
+
 end
 
-
-if ARGV.size==0 || ARGV.size > 3
-	usage
-	exit 1
+options = {}
+optparse = OptionParser.new do |opts|
+  # set banner of help screen
+	opts.banner = usage
+  # define options
+  options[:both] = false
+  opts.on('-b','--both','Returns the all the entries') do
+    options[:both] =true
+  end
+  options[:unique] = false
+  opts.on('-u', '--unique', 'Only returns the unique mapped alignments') do
+  	options[:unique] = true
+  end
+  options[:non_unique] = false
+  opts.on('-n', '--non-unique','Only returns the non-unique mapped alignments') do
+  	options[:non_unique] = true
+  end
+  options[:file] = false
+	# Display of the help screen
+	opts.on( '-h', '--help', 'Display this screen' ) do
+  	puts opts
+  	exit
+	end
 end
 
+optparse.parse!
 
 unless File.exist?(ARGV[0])
 	raise "Can't find file #{ARGV[0]}!"
 end
 
 file = RubyRum::BowtieParser.new(ARGV[0])
-#puts file.list_of_lines.length
-#puts file.non_unique_mapper_pos.length
-#puts file.unique_mapper_pos.length
-#puts file.list_of_header.length
 
-case ARGV[1]
-when "unique", "u"
-	str = file.unique_to_s()
 
-when "non-unique", "n"
-	str = file.non_unique_to_s()
+str = file.unique_to_s() if options[:unique]
+str = file.non_unique_to_s() if options[:non_unique]
+str = file.unique_to_s() + "\n@Non-unique: \n" + file.non_unique_to_s() if options[:both]
 
+if ARGV[1] != nil
+	z = File.new(ARGV[1],'w')
+	z.write(str)
+	z.close
 else
-	str = file.unique_to_s() + "\n @@@@@@@@ \n" + file.non_unique_to_s()
-
+	puts str
 end
-
-puts str
-
-

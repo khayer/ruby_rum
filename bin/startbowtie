@@ -3,20 +3,23 @@
 
 require 'ruby_rum/pre_bowtie'
 
+
 def usage
     msg =<<EOF
+
 ----------------------- Usage -------------------------
 #{$0} bowtie ebwt read1 read2 outfile
 -------------------------------------------------------
 Calls bowtie with the following preset options:
 -a --best --strata  --pairtries 1000 --chunkmbs 1024"
 -v 3 --suppress 6,7,8 -p 1 --quiet -S"
--------------------------------------------------------"
+-------------------------------------------------------
  bowtie : variable in path or the absolut path"
    ebwt : bowtie-index"
    read : reads in fastq format"
 outfile : name of the output file"
--------------------------------------------------------"
+-------------------------------------------------------
+
 EOF
 
 end
@@ -24,7 +27,7 @@ end
 
 
 if ARGV.size!=5
-    usage
+    puts usage
     exit 1
 end
 
