@@ -7,3 +7,5 @@ vertebrate_mammalian.2.rna.fna
 # OS X filesystem file
 .DS_Store
 e_coli_result
+outfile
+hg_19_test
