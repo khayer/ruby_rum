@@ -1,5 +1,5 @@
 require 'test/unit'
-require "fasta_parser"
+require "ruby_rum"
 
 # require_relative '../lib/fasta_parser'
 
@@ -24,6 +24,23 @@ class TestFastaParser < Test::Unit::TestCase
       assert(entry.kind_of? FastaParser::Entry)
       assert(headers[i], entry.header)
     end
+  end
+
+  def test_combine_fasta_parse_to_file()
+
+    test_dir = "test/fixtures/"
+    out = "#{test_dir}example_combined.fa"
+    test_combination = FastaParser::CombineFasta.new(test_dir+"R1_example.fq", test_dir+"R2_example.fq", out)
+
+    test_combination.parse_to_file()
+    assert(File.exist?(out))
+    File.delete(out)
+
+   #File.open(out)
+
+   #File.open(out)
+   #assert_equal(@current_file.list_of_positions.length, 14703)
+   #assert_equal(@current_file.list_of_positions[0],0)
   end
 
 

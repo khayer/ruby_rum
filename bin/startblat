@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+
+require 'blat_parser/pre_blat'
+require "benchmark"
+
+def usage
+    msg =<<EOF
+
+----------------------- Usage -------------------------
+#{$0} blat database query output options
+-------------------------------------------------------
+Calls blat with the following preset options:
+-minScore=20 -minidentity=93 -stepsize=5 -out=pslx
+-------------------------------------------------------
+   blat : variable in path or the absolut path
+  query : reads in fasta format
+ output : name of the output file
+-------------------------------------------------------
+
+EOF
+
+end
+
+if ARGV.size == 0
+  puts usage
+  exit 1
+else
+
+  if ARGV.size > 5
+    i = 5
+    while i < ARGV.size
+      ARGV[4] = ARGV[4]+" "+ARGV[i]
+      i += 1
+    end
+  end
+
+
+
+  para = BlatParser::PreBlat.new(*ARGV)
+  puts Benchmark.measure{t = para.call_blat()}
+  if File.exist?(ARGV[3])
+    puts "File for #{ARGV[2]} in #{ARGV[3]}! "
+  else
+    "SOMETHING WRONG"
+  end
+end
+
+
+
+

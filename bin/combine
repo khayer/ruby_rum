@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+
+require 'blat_parser/combine_fasta'
+require "benchmark"
+
+def usage
+    msg =<<EOF
+
+----------------------- Usage -------------------------
+#{$0} fasta_file1 fasta_file2 ouput
+-------------------------------------------------------
+Combines two fasta files into one with 50 N's between
+the sequences
+-------------------------------------------------------
+
+EOF
+
+end
+
+if ARGV.size == 0
+  puts usage
+  exit 1
+else
+
+  para = BlatParser::CombineFasta.new(*ARGV)
+  puts Benchmark.measure{t = para.parse_to_file()}
+  if File.exist?(ARGV[2])
+    puts "File #{ARGV[2]} exist."
+  else
+    "SOMETHING WRONG"
+  end
+end
+
+
+
+

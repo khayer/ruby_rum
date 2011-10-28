@@ -1,0 +1,68 @@
+#!/usr/bin/env ruby
+
+
+require 'blat_parser/parser'
+require 'blat_parser/blat_content'
+
+require 'optparse'
+require "benchmark"
+
+
+
+
+
+def usage
+  msg =<<EOF
+
+----------------------- Usage -------------------------
+#{$0} file [options] outfile
+-------------------------------------------------------
+Parses a file produced by blat (only .pslx)
+-------------------------------------------------------
+         file : name of the blat file
+      outfile : name of the output file
+-------------------------------------------------------
+
+EOF
+
+end
+
+if ARGV.size == 0
+  puts usage
+else
+  options = {}
+  optparse = OptionParser.new do |opts|
+    # set banner of help screen
+    opts.banner = usage
+    # define options
+    options[:both] = false
+    opts.on('-b','--both','Returns the all the entries') do
+      options[:both] =true
+    end
+    options[:unique] = false
+    opts.on('-u', '--unique', 'Only returns the unique mapped alignments') do
+      options[:unique] = true
+    end
+    options[:non_unique] = false
+    opts.on('-n', '--non-unique','Only returns the non-unique mapped alignments') do
+      options[:non_unique] = true
+    end
+    options[:file] = false
+    # Display of the help screen
+    opts.on( '-h', '--help', 'Display this screen' ) do
+      puts opts
+      exit
+    end
+  end
+
+  optparse.parse!
+
+
+  puts Benchmark.measure{file = BlatParser::Parser.new(ARGV[0], ARGV[1])}
+
+
+  #str = file.unique_to_s() if options[:unique]
+  #str = file.non_unique_to_s() if options[:non_unique]
+  #str = file.unique_to_s() + "\n@Non-unique: \n" + file.non_unique_to_s() if options[:both]
+
+end
