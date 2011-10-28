@@ -1,0 +1,10 @@
+>gi|350529369|ref|NM_001244992.1| Homo sapiens protein phosphatase 1, regulatory subunit 12A (PPP1R12A), transcript variant 5, mRNA
+>gi|350529365|ref|NM_001244990.1| Homo sapiens protein phosphatase 1, regulatory subunit 12A (PPP1R12A), transcript variant 4, mRNA
+>gi|350276244|ref|NM_001244973.1| Homo sapiens neuropilin 1 (NRP1), transcript variant 5, mRNA
+>gi|349501083|ref|NR_045205.1| Homo sapiens CHK1 checkpoint homolog (S. pombe) (CHEK1), transcript variant 6, non-coding RNA
+>gi|349501060|ref|NM_001244846.1| Homo sapiens CHK1 checkpoint homolog (S. pombe) (CHEK1), transcript variant 4, mRNA
+>gi|349501062|ref|NR_045204.1| Homo sapiens CHK1 checkpoint homolog (S. pombe) (CHEK1), transcript variant 5, non-coding RNA
+>gi|350276241|ref|NM_001244972.1| Homo sapiens neuropilin 1 (NRP1), transcript variant 4, mRNA
+>gi|350276251|ref|NR_045259.1| Homo sapiens neuropilin 1 (NRP1), transcript variant 6, non-coding RNA
+>gi|349501059|ref|NM_001274.5| Homo sapiens CHK1 checkpoint homolog (S. pombe) (CHEK1), transcript variant 3, mRNA
+>gi|349501056|ref|NM_001114122.2| Homo sapiens CHK1 checkpoint homolog (S. pombe) (CHEK1), transcript variant 1, mRNA

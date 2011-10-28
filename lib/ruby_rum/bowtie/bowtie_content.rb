@@ -1,4 +1,4 @@
-module RubyRum
+module Bowtie
 	class BowtieContent
 
 		def initialize(line)

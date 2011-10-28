@@ -1,4 +1,4 @@
-module RubyRum
+module Bowtie
 	class BowtieParser
 		# The output file is a SAM file so we
 		include Enumerable
@@ -47,7 +47,7 @@ module RubyRum
 		end
 
 		def make_content()
-			content = RubyRum::BowtieContent.new(@filehandler.read())
+			content = Bowtie::BowtieContent.new(@filehandler.read())
 		end
 
 		def each
