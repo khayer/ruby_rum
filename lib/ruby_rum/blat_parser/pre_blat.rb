@@ -7,10 +7,14 @@ module BlatParser
       @query = query
       @outputdir = outputdir
       @options = options
+      @output = ""
     end
 
+    attr_accessor :output
+
     def call_blat()
-      cmd = "#{@blatdir}  #{@database} #{@query} #{@outputdir} #{@options} -out=pslx"
+
+      cmd = "#{@blatdir}  #{@database} #{@query} #{@outputdir} #{@options} -out=pslx >#{@outputdir}result.txt"
       a = Thread.new{system(cmd)}
       b = Thread.new{
         while a.alive?
@@ -22,7 +26,14 @@ module BlatParser
       }
       a.join
       b.join
-      puts File.exist?(@outputdir)
+      z = ::File.new(@outputdir+"result.txt")
+      z.each do |line|
+        line = line
+        @output += line
+      end
+      File.delete(z)
+
+      File.exist?(@outputdir)
 
     end
 

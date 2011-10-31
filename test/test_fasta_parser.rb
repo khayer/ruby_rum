@@ -1,5 +1,5 @@
 require 'test/unit'
-require "ruby_rum"
+require "ruby_rum/fasta_parser"
 
 # require_relative '../lib/fasta_parser'
 

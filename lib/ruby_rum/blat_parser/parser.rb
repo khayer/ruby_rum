@@ -13,20 +13,37 @@ module BlatParser
         @counter_unique = 0
         @counter_non_unique = 0
 
-        line = @filehandler.readline()
-        a_line = aline = line.split()
-        # getting rid off heaerl
-        while !is_a_number?(aline[0])
-          line = @filehandler.readline()
-          a_line = aline = line.split()
-        end
+        line = avoid_header()
         parse_to_file(line)
-      end
     end
 
     attr_accessor :list_of_lines, :current_iteration, :list_of_header, :unique_mapper_pos, :non_unique_mapper_pos
 
+    def each
+      yield self.next
+    end
 
+    def next()
+      make_content(@filehandler.readline())
+    end
+
+    def inspect()
+      "#{self.class}:#{@filename}"
+    end
+
+
+
+    def avoid_header()
+      line = @filehandler.readline()
+      aline = line.split()
+
+      # getting rid off header
+      while !is_a_number?(aline[0])
+        line = @filehandler.readline()
+        aline = line.split()
+      end
+      line
+    end
 
     def make_content(line)
       content = BlatParser::BlatContent.new(line)
@@ -42,6 +59,7 @@ module BlatParser
 
       z_unique = File.new(@outdir+"_unique", 'w')
       z_non_unique = File.new(@outdir+"_non_unique", 'w')
+      entries = []
 
       while !@filehandler.eof?
         entry1 = make_content(line)
@@ -54,6 +72,7 @@ module BlatParser
           marker2 = true
           while entry1.q_name == entry2.q_name
 
+            # same chrosome?
             if entry1.t_name == entry2.t_name
 
               entries << entry2
@@ -64,7 +83,7 @@ module BlatParser
               else
                 line = @filehandler.readline()
                 entry2 = make_content(line)
-                marker = 1
+                marker = true
               end
 
             else
@@ -75,7 +94,7 @@ module BlatParser
               out = "#{entry1.to_s()}"
               z_non_unique.write(out+"\n")
 
-              while entry1.qname == entry2.qname
+              while entry1.q_name == entry2.q_name
 
                 out = "#{entry2.to_s()}"
                 z_non_unique.write(out+"\n")
@@ -118,21 +137,21 @@ module BlatParser
     end
 
     private
-    # a little helper
-    def is_a_number?(s)
-      s.to_s.match(/\A[+-]?\d+?(\.\d+)?\Z/) == nil ? false : true
-    end
+
 
     # only mappers in a certain range are seen as unique mappers
     def is_in_range?(entries, z_unique, z_non_unique)
       smallest = 2**(50)
       biggest = 0
+
       entries.each do |entry|
-        if entry.t_start > biggest
-          biggest = entry.t_start
+        start = entry.t_start.to_i
+        ende = entry.t_end.to_i
+        if  start > biggest
+          biggest = start
         end
-        if entry.t_end < smallest
-          smallest = entry.t_end
+        if ende < smallest
+          smallest = ende
         end
       end
 
@@ -156,5 +175,14 @@ module BlatParser
         filehandler.write(out+"\n")
       end
     end
+
+
+
+    # a little helper
+    def is_a_number?(s)
+      s.to_s.match(/\A[+-]?\d+?(\.\d+)?\Z/) == nil ? false : true
+    end
+
+  end
 
 end
