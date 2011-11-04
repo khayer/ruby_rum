@@ -1,13 +1,12 @@
 module Bowtie
 	class PreBowtie
 		# Parameters
-		def initialize(bowtiedir, genom, read1 , read2 ,  outdir, chunk=1)
+		def initialize(bowtiedir, genom, read1 , read2 ,  outdir)
 			@read1 = read1 #FASTQ
 			@read2 = read2 #FASTQ
 			@genom = genom
 			@bowtiedir = bowtiedir
 			@outdir = outdir
-			@chunk = chunk
 			# add path for bowtie exutables
 		end
 

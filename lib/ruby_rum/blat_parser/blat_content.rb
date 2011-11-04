@@ -32,6 +32,26 @@ module BlatParser
     def to_s()
       str = @matches+"\t"+@mis_matches+"\t"+@rep_matches+"\t"+@n_count+"\t"+@q_num_insert+"\t"+@q_base_insert+"\t"+@t_num_insert+"\t"+@t_base_insert+"\t"+@strand+"\t"+@q_name+"\t"+@q_size+"\t"+@q_start+"\t"+@q_end+"\t"+@t_name+"\t"+@t_size+"/t"+@t_start+"/t"+@t_end+"/t"+@block_count+"/t"+@block_sizes+"/t"+@q_starts+"/t"+@t_starts+"/t"+@seq
     end
+
+
+
+    # The score is the sum of block sizes - the mismatches
+    def score()
+      score = sum_block_sizes()-@mis_matches.to_i()
+    end
+
+
+    private
+    # Returns the sum of the individual block sizes
+    def sum_block_sizes()
+      block_sizes = @block_sizes.split(',')
+      sum = 0
+      for block_size in block_sizes
+        sum += block_size.to_i()
+      end
+      sum
+    end
+
   end
 end
 

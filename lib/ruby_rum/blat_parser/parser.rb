@@ -19,6 +19,7 @@ module BlatParser
 
     attr_accessor :list_of_lines, :current_iteration, :list_of_header, :unique_mapper_pos, :non_unique_mapper_pos
 
+    private
     def each
       yield self.next
     end
@@ -45,6 +46,7 @@ module BlatParser
       line
     end
 
+    public
     def make_content(line)
       content = BlatParser::BlatContent.new(line)
     end
@@ -55,6 +57,7 @@ module BlatParser
     # - it is on the same chromosome AND
     # - it is in the same general area (@maxpairdist)
 
+    private
     def parse_to_file(line)
 
       z_unique = File.new(@outdir+"_unique", 'w')
@@ -135,8 +138,6 @@ module BlatParser
       z_non_unique.close
       z_unique.close
     end
-
-    private
 
 
     # only mappers in a certain range are seen as unique mappers
