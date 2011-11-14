@@ -1,75 +1,67 @@
-module FastaParser
+require "fasta_parser"
+
+module FastqParser<Parser
   class File
     include Enumerable
 
-    def initialize(filename=nil)
+    def initialize(filename)
       if filename
         # use the root Ruby File class to open a file
         @filehandler = ::File.open(filename)
         @list_of_positions = []
         pos = @filehandler.pos
         @filehandler.each do |entry|
-            if entry.include? ">"
+            if entry.include? "@"
               @list_of_positions << pos
             end
           pos = @filehandler.pos
         end
 
 
-
-      else
-
-        @filehandler = nil
-        @list_of_positions = []
-      end
       @current_iteration = 0
+      @filehandler.pos=0
     end
 
     attr_accessor :list_of_positions, :current_iteration
 
 
-    private
-    # opens a FASTA file by passing the path as a String and saves the details
     def self.open(filename)
       self.new(filename)
     end
 
     # This method returns the entry matching the current_iteration number
     def next()
-      @filehandler.seek(@list_of_positions[@current_iteration], IO::SEEK_SET)
+
+      @filehandler.pos = @list_of_positions[@current_iteration]
 
       if @list_of_positions.length > @current_iteration
           @current_iteration += 1
       end
 
       make_entry()
+
     end
 
 
     # Now the actual iterator
-    def each &block
-      while(!@filehandler.eof?)
-        yield self.next()
-      end
+    def each
+        for i in @list_of_positions
+          yield self.next()
+        end
     end
 
 
     ## Helper Method: make_entry; Makes an Entry object to the current file-position
     def make_entry()
-      header = @filehandler.readline.chomp
-      sequence = ""
-      # f.each do |line|
-      @filehandler.each do |line|
-        unless line.include? ">"
-          sequence += line.chomp
-        else
-          break
-        end
-      end
-      Entry.new(header,sequence)
-    end
 
-    public
+      seq_id = @filehandler.readline.chomp
+      puts seq_id
+      sequence = @filehandler.readline.chomp
+      identifier = @filehandler.readline.chomp
+      quality = @filehandler.readline.chomp
+
+      Entry.new(seq_id, sequence, identifier, quality)
+    end
 
     # returns x'th entry in the file
     def entry_num(x)
@@ -98,6 +90,11 @@ module FastaParser
     # Returns last entry
     def last()
       entry_num(count())
+    end
+
+    def to_fasta
+
+
     end
 
   end
