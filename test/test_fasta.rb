@@ -1,18 +1,19 @@
 require 'test/unit'
-require "ruby_rum/fasta_parser"
+require 'ruby_rum'
+include Fasta
 
 # require_relative '../lib/fasta_parser'
 
 # main class names should be the CamelCase equivalent of the snake_case file name
 # unless there is a very good reason to be different.
-class TestFastaParser < Test::Unit::TestCase
+class TestFasta < Test::Unit::TestCase
 
   def setup()
-    @fasta_file = FastaParser::File.open(File.join("test", "fixtures", "sequences.fasta"))
+    @fasta_file = FastaParser.open(File.join("test", "fixtures", "sequences.fasta"))
   end
 
   def test_open()
-    assert(@fasta_file.instance_of?(FastaParser::File), "Not a FastaParser::File instance")
+    assert(@fasta_file.instance_of?(FastaParser), "Not a FastaParser instance")
   end
 
   def test_each()
@@ -21,8 +22,8 @@ class TestFastaParser < Test::Unit::TestCase
 
     # Now iterate through the fasta file, testing the order of the headers
     @fasta_file.each_with_index  do |entry,i|
-      assert(entry.kind_of? FastaParser::Entry)
-      assert(headers[i], entry.header)
+      assert(entry.kind_of? FastaEntry)
+      assert_equal(headers[i], entry.header)
     end
   end
 
@@ -30,9 +31,7 @@ class TestFastaParser < Test::Unit::TestCase
 
     test_dir = "test/fixtures/"
     out = "#{test_dir}example_combined.fa"
-    test_combination = FastaParser::CombineFasta.new(test_dir+"R1_example.fq", test_dir+"R2_example.fq", out)
-
-    test_combination.parse_to_file()
+    combine(test_dir+"R1_example.fq", test_dir+"R2_example.fq", out)
     assert(File.exist?(out))
     File.delete(out)
 
@@ -115,10 +114,10 @@ class TestFastaParser < Test::Unit::TestCase
   end
 
   def test_cut_seq()
-    @fasta1 = FastaParser::File.open("test/fixtures/100ReadsOf100.fa")
+    @fasta1 = FastaParser.open("test/fixtures/100ReadsOf100.fa")
     z1 = ::File.open("test/fixtures/100ReadsOf50.fa", 'w')
 
-    @fasta2 = FastaParser::File.open("test/fixtures/200ReadsOf100.fa")
+    @fasta2 = FastaParser.open("test/fixtures/200ReadsOf100.fa")
     z2 = ::File.open("test/fixtures/200ReadsOf50.fa", 'w')
 
     for i in @fasta1.list_of_positions
