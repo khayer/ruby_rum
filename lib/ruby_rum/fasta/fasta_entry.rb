@@ -1,16 +1,15 @@
- class Entry
+ class FastaEntry<Entry
 
-    def initialize(header,sequence)
+    def initialize(header, sequence)
       # Header is ">XX|GGGGGGGG|XXX|AAAAAAAAAAA| ..."
-      @header = header.chomp
+
+      @header = header
       parse_header()
-      # If sequence is an Array, then join the separate entries
-      if sequence.kind_of? Array
-        # chomp newlines & whitespace, then join with empty string
-        sequence = sequence.map{|s| s.strip }.join("")
-      end
       @sequence = sequence
+      parse_header()
+
     end
+
     attr :header, :sequence, :gi_num, :accession, :description
 
     def header=(h)
@@ -25,6 +24,8 @@
         @accession = tmp[3]
         @description = tmp[-1]
       end
+      tmp = @header.split(" ")
+      @q_name= tmp[0]
     end
 
     def cut_sequence(number)

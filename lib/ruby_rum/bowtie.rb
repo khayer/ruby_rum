@@ -1,3 +1,7 @@
-require "ruby_rum/bowtie/bowtie_content"
+require "ruby_rum/bowtie/bowtie_entry"
 require "ruby_rum/bowtie/bowtie_parser"
-require "ruby_rum/bowtie/pre_bowtie"
+require "ruby_rum/bowtie/bowtie_runner"
+
+module Bowtie
+
+end
