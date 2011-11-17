@@ -23,69 +23,61 @@ class BowtieParser<Parser
   end
 
 
-
-	# parse into unique and non-unique mappers
-	def parse()
-		@filehandler.pos = 0
-		#puts @filehandler.pos
-		qnames = []
-		pos = []
-		self.map  {|content|
-			#puts content.qname
-			qnames << content.q_name()
-			pos << @current_iteration
-		}
-		while !qnames.empty?()
-			element1 = qnames.pop()
-			pos1 = pos.pop()
-			if qnames.include?(element1)
-				@non_unique_mapper_pos << pos1
-				while qnames.include?(element1)
-					ind = qnames.index(element1)
-					qnames.delete_at(ind)
-					pos2 = pos.delete_at(ind)
-					@non_unique_mapper_pos << pos2
-				end
-			else
-				@unique_mapper_pos << pos1
-			end
-		end
-	end
-	def content_at(x)
-		if x < 0
-			raise "Invalid entry number!"
-		end
-		if x > @list_of_lines.length()
-			raise "There are only #{@list_of_lines.length} entries!"
-		end
-		@current_iteration = x
-		self.next()
-	end
-
-
 	# Separates unique mappers from non-unique mappers
 	def separate_unique_nonunique(outdir)
 		unique_out=File.new(outdir+"_u",'w')
 		non_unique_out=File.new(outdir+"_nu",'w')
+		@filehandler = @start_pos
+    entry1 = make_entry()
+		entries = []
+		entries_reverse = []
 
+		if entry1.qname.include? "REV"
+			entries_reverse<<entry1
+		else
+			entries<<entry1
+		end
 
-
+		while !@filehandler.eof?
+			entry2 = make_entry()
+			case
+			when entry1.qname == entry2.qname
+				entries<<entry2
+				entry1=entry2
+			when "#{entry1.qname}REV" == entry2.qname
+				entries_reverse<<entry2
+				entry1=entry2
+			else
+				compare(entries,entries_reverse)
+				entries = []
+				entries_reverse = []
+				entry1=entry2
+			end
+		end
 
 	end
-
-
-
 
 	private
-	def entries_to_s(positions)
-		out = ""
-		for pos in positions
-			  pos = pos - 1
-				entry = content_at(pos)
-				out = "#{out}#{entry.to_s()}"
+	def compare(entries,entries_reverse)
+		entry1 = entries.pop()
+		unique_mappers = []
+		non_unique_mappers = []
+		not_mapped = []
+		while entry1
+			for entry2 in entries_reverse
+				# compare if it is on the same chr and if it is in range or overlapped
+			end
+
+			entry1 = entries.pop()
 		end
-		return out
-	end
+
+		entry1 = entries_reverse.pop()
+		while entry1
+			entry2 = entries_reverse.pop()
+
+		end
+
+
 
 
 
