@@ -20,4 +20,8 @@ class BowtieEntry<Entry
 		"#{@q_name}\t#{@flag}\t#{@rname}\t#{@pos}\t#{@mapq}\t#{@cigar}\t#{@rnext}\t#{@pnext}\t#{@tlen}\t#{@seq}\t#{@qual}\n"
 	end
 
+	def to_fasta
+		FastaEntry.new(">#{@q_name} #{@qual}", @seq)
+	end
+
 end

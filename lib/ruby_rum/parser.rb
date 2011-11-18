@@ -1,6 +1,7 @@
 class Parser
 
   include Enumerable
+  include Operations
 
   def initialize(filename)
     @filename=filename

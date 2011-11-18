@@ -5,6 +5,8 @@ class BowtieParser<Parser
 		super(filename)
 		avoid_header()
 		@start_pos = @filehandler.pos
+		@unique_counter=0
+		@non_unique_counter=0
 	end
 
 	def avoid_header()
@@ -48,34 +50,70 @@ class BowtieParser<Parser
 				entries_reverse<<entry2
 				entry1=entry2
 			else
-				compare(entries,entries_reverse)
+				seperate_same_name(entries,entries_reverse, unique_out, non_unique_out)
 				entries = []
 				entries_reverse = []
 				entry1=entry2
 			end
 		end
-
+		seperate_same_name(entries,entries_reverse, unique_out, non_unique_out)
 	end
 
 	private
-	def compare(entries,entries_reverse)
+	def seperate_same_name(entries,entries_reverse,unique_out,non_unique_out)
+
+
+		paired=[]
+		unpaired=[]
+
 		entry1 = entries.pop()
-		unique_mappers = []
-		non_unique_mappers = []
-		not_mapped = []
-		while entry1
-			for entry2 in entries_reverse
-				# compare if it is on the same chr and if it is in range or overlapped
+		if entry1.rname == "*"
+			not_mapped<<entry1
+		else
+
+			while entry1
+				unpaired<<entry1
+				entries_reverse.each do |entry|
+					# compare if it is on the same chr and if it is in range or overlapped
+					if entry1.rname == entry.rname && is_in_range?(entry1.pos,entry2.pos)
+						unpaired.delete(entry1)
+						paired<<entry1
+						paired<<entries_reverse.pop(entry)
+					end
+				end
+				entry1 = entries.pop()
+			end
+		end
+
+		entry2 = entries.pop()
+		if entry2.rname == "*"
+			not_mapped<<entry1
+		else
+			while entry2
+				unpaired<<entry1
+			end
+		end
+
+		case
+		when !paired.empty?()
+			if paired.length()>2
+				@non_unique_counter+=1
+				each.paired do |entry|
+					entry_fa = entry.to_fasta()
+					non_unique_out.write(entr_fa.to_s()+"\n")
+				end
+			else
+				@unique_counter+=1
+				each.paired do |entry|
+					entry_fa = entry.to_fasta()
+					unique_out.write(entr_fa.to_s()+"\n")
+				end
 			end
 
-			entry1 = entries.pop()
-		end
+		when !unpaired.empty?
+			if unpaired.length()>1 && paired.isempty?()
 
-		entry1 = entries_reverse.pop()
-		while entry1
-			entry2 = entries_reverse.pop()
 
-		end
 
 
 
