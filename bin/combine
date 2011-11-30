@@ -1,35 +1,58 @@
 #!/usr/bin/env ruby
+require 'ruby_rum'
+require 'optparse'
+include Fasta
 
-require 'blat_parser/combine_fasta'
-require "benchmark"
+options={ :seriell => nil,
+          :fastq => nil,
+          :first => nil,
+          :output => nil,
+          :number_of_ns => 30
+        }
 
-def usage
-    msg =<<EOF
+OptionParser.new do |opts|
+  opts.banner = "Usage: combine [options]"
 
------------------------ Usage -------------------------
-#{$0} fasta_file1 fasta_file2 ouput
--------------------------------------------------------
-Combines two fasta files into one with 50 N's between
-the sequences
--------------------------------------------------------
+  opts.on("-1", :REQUIRED, String, "First input file (FASTA/FASTQ)") do |i|
+    options[:first] = i
+    options[:output] = i + "combined" unless option[:output]
+  end
+
+  opts.on("-2", :REQUIRED, String, "Second input file (FASTA/FASTQ") do |i|
+    options[:second] = i
+  end
+
+  opts.on("-o", "Output name. (DEFAULT: <first_input>combined)") do |i|
+    options[:output] = i
+  end
+
+  opts.on("-n", "Number of N's inbetween the two sequences. (DEFAULT: 30)") do |i|
+    options[:number_of_ns]=i
+  end
+
+  opts.on_tail("-h","Show this message") do
+    puts opts
+    exit
+  end
+end.parse!
+
+usage =<<EOF
+
+------------------------------- Usage ---------------------------------
+
+  #{$0} fasta_file1 fasta_file2 ouput_file [OPTS]
+
+-----------------------------------------------------------------------
+
+  Combines two fasta files into one with x N's between
+  the sequences
+
+-----------------------------------------------------------------------
 
 EOF
 
-end
+STDERR.puts usage unless ARGV.length > 1
 
-if ARGV.size == 0
-  puts usage
-  exit 1
-else
-
-  para = BlatParser::CombineFasta.new(*ARGV)
-  puts Benchmark.measure{t = para.parse_to_file()}
-  if File.exist?(ARGV[2])
-    puts "File #{ARGV[2]} exist."
-  else
-    "SOMETHING WRONG"
-  end
-end
 
 
 

@@ -112,12 +112,9 @@ class BowtieParser<Parser
 
 		when !unpaired.empty?
 			if unpaired.length()>1 && paired.isempty?()
-
-
-
-
-
-
-
+				puts "BUUUUH"
+			end
+		end
+	end
 end
 
