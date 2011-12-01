@@ -1,0 +1,99 @@
+#!/usr/bin/env ruby
+require 'ruby_rum'
+require 'optparse'
+require 'yaml'
+include Fasta
+include Fastq
+
+usage =<<EOF
+
+------------------------------- Usage ---------------------------------
+
+  #{$0} -1 fasta_file1 -2 fasta_file2 [-o ouput_file] [OPTS]
+
+-----------------------------------------------------------------------
+
+  Combines two fasta files into one with x N's between
+  the sequences
+
+-----------------------------------------------------------------------
+
+EOF
+unless ARGV.length > 1
+  STDERR.puts usage
+  exit
+end
+
+options={ :seriell => nil,
+          :fastq => nil,
+          :first => nil,
+          :second => nil,
+          :output => nil,
+          :number_of_ns => 30
+        }
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: combine [options]"
+
+  opts.on("-1", "--first",  :REQUIRED ,String, "First input file (FASTA/FASTQ)") do |f|
+    options[:first] = f
+    options[:output] = f + "combined" unless options[:output]
+  end
+
+  opts.on("-2", "--second", :REQUIRED, String, "Second input file (FASTA/FASTQ)") do |s|
+    options[:second] = s
+  end
+
+  opts.on("-o","--output", :REQUIRED ,String,"Output name. (DEFAULT: <first_input>combined)") do |o|
+    options[:output] = o
+  end
+
+  opts.on("-n", "Number of N's inbetween the two sequences. (DEFAULT: 30)") do |n|
+    options[:number_of_ns]=n
+  end
+
+  opts.on("-s", "Combine seriell. (DEFAULT: false)") do |l|
+    options[:seriell] = true if l
+  end
+
+  opts.on("-f", "Fastq file? (DEFAULT: false)") do |q|
+    options[:fastq] = true if q
+  end
+
+  opts.on_tail("-h","Show this message") do
+    puts opts
+    exit
+  end
+end.parse!
+
+begin
+  mandatory = [:first, :second]
+  missing = mandatory.select{ |param| options[param].nil? }
+  puts missing
+  if !missing.empty?
+    puts "Missing options: #{missing.join(', ')}"
+    puts usage
+    exit
+  end
+rescue OptionParser::InvalidOption, OptionParser::MissingArgument
+  puts $!.to_s
+  puts optparse
+  exit
+end
+
+STDERR.puts "CURRENT OPTIONS:"
+STDERR.puts options.to_yaml
+
+if options[:fastq]
+  if options[:seriell]
+    Fastq.combine_seriell(options[:first],options[:second],options[:output])
+  else
+    Fastq.combine()
+  end
+else
+  if options[:seriell]
+    Fasta.combine_seriell(options[:first],options[:second],options[:output])
+  else
+    Fasta.combine(options[:first],options[:second],options[:output],options[:number_of_ns])
+  end
+end

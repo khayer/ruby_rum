@@ -1,40 +1,44 @@
 #!/usr/bin/env ruby
-
-
-require 'blat_parser/parser'
-require 'blat_parser/blat_content'
-
+require 'ruby_rum'
 require 'optparse'
-require "benchmark"
+require 'benchmark'
 
+usage =<<EOF
 
-
-
-
-def usage
-  msg =<<EOF
-
------------------------ Usage -------------------------
-#{$0} file [options] outfile
--------------------------------------------------------
-Parses a file produced by blat (only .pslx)
--------------------------------------------------------
-         file : name of the blat file
+  --------------------------- Usage ----------------------------
+    #{$0} -i input [options] -o outfile
+  --------------------------------------------------------------
+    Parses a file produced by blat (only .pslx)
+  --------------------------------------------------------------
+        input : name of the blat file
       outfile : name of the output file
--------------------------------------------------------
+      options : call '#{$0} -h' for more information
+  --------------------------------------------------------------
 
 EOF
 
 end
 
-if ARGV.size == 0
-  puts usage
-else
-  options = {}
-  optparse = OptionParser.new do |opts|
-    # set banner of help screen
-    opts.banner = usage
-    # define options
+unless ARGV.length > 1
+  STDERR.puts usage
+  exit
+end
+
+options = { :input => nil
+            :output => nil
+          }
+
+OptionParser.new do |opts|
+  opts.banner = usage
+
+  opts.on("-i", "--input", :REQUIRED, String, "Outfile of Blat") do |i|
+    options[:second] = i
+  end
+
+  opts.on("-o", "--input", :REQUIRED, String, "Outfile of Blat") do |o|
+    options[:second] = i
+  end
+
     options[:both] = false
     opts.on('-b','--both','Returns the all the entries') do
       options[:both] =true
