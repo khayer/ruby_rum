@@ -16,57 +16,56 @@ usage =<<EOF
   --------------------------------------------------------------
 
 EOF
-
-end
-
 unless ARGV.length > 1
   STDERR.puts usage
   exit
 end
 
-options = { :input => nil
-            :output => nil
+options = { :input => nil,
+            :output => nil,
+	    :unique => nil,
+	    :non_unique => nil
           }
 
-OptionParser.new do |opts|
+optparse = OptionParser.new do |opts|
   opts.banner = usage
 
-  opts.on("-i", "--input", :REQUIRED, String, "Outfile of Blat") do |i|
-    options[:second] = i
+  opts.on("-i", "--input", :REQUIRED, String, "Outfile of Blat.") do |i|
+    options[:input] = i
   end
 
-  opts.on("-o", "--input", :REQUIRED, String, "Outfile of Blat") do |o|
-    options[:second] = i
+  opts.on("-o", "--output", :REQUIRED, String, "Prefix of the output.") do |o|
+    options[:output] = o
   end
 
-    options[:both] = false
-    opts.on('-b','--both','Returns the all the entries') do
-      options[:both] =true
-    end
-    options[:unique] = false
-    opts.on('-u', '--unique', 'Only returns the unique mapped alignments') do
-      options[:unique] = true
-    end
-    options[:non_unique] = false
-    opts.on('-n', '--non-unique','Only returns the non-unique mapped alignments') do
-      options[:non_unique] = true
-    end
-    options[:file] = false
-    # Display of the help screen
-    opts.on( '-h', '--help', 'Display this screen' ) do
-      puts opts
-      exit
-    end
+  opts.on("-u", "Parse out unique mappers." ) do |u|
+    options[:unique] = nil
   end
-
-  optparse.parse!
-
-
-  puts Benchmark.measure{file = BlatParser::Parser.new(ARGV[0], ARGV[1])}
-
-
-  #str = file.unique_to_s() if options[:unique]
-  #str = file.non_unique_to_s() if options[:non_unique]
-  #str = file.unique_to_s() + "\n@Non-unique: \n" + file.non_unique_to_s() if options[:both]
-
+  
+  #opts.on("-n","--nonunique", "Parse out non-unique mappers.") do |n|
+   # options[:nonunique] = nil
+  #end
+  
+  opts.on_tail( "-h", "--help", "Display this screen" ) do
+    puts opts
+    exit 
+  end
 end
+
+begin
+  optparse.parse!
+  mandatory = [:input, :output]
+  missing = mandatory.select{ |param| options[param].nil? }
+  puts missing
+  if !missing.empty?
+    puts "Missing options: #{missing.join(', ')}"
+    puts usage
+    exit
+  end
+rescue OptionParser::InvalidOption, OptionParser::MissingArgument
+   puts $!.to_s
+   puts optparse
+   exit 
+end
+
+#puts Benchmark.measure{file = BlatParser::Parser.new(ARGV[0], ARGV[1])}
