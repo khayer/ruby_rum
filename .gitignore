@@ -11,3 +11,5 @@ outfile
 hg_19_test
 *.graphml
 katze
+
+test/fixtures/indexes/*

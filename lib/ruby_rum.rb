@@ -8,6 +8,7 @@ require "ruby_rum/runner"
 
  # The subclasses
 require "ruby_rum/bowtie"
+require "ruby_rum/bowtie2"
 require "ruby_rum/fasta"
 require "ruby_rum/blat"
 require "ruby_rum/fastq"

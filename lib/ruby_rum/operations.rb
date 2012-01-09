@@ -9,4 +9,11 @@ module Operations
     dis <= distance
   end
 
+  # seperates a file in 10Mb chunks and returns random.number_of_chunks
+  def seperate_file(filename, tmp_folder_name)
+    handler = File.open(filename,'r')
+
+
+  end
+
 end
